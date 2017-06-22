@@ -88,7 +88,7 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 {
 	TCHAR info[]  = _T("Write your essay in the field to the left\nthen press submit.");
 	TCHAR info2[] = _T("dont forget to add\n.txt at the end of the name.");
-	TCHAR text[100];
+	TCHAR nameYourFile[100];
 	TCHAR messageText[10000];
 	std::basic_fstream<TCHAR> file;
 
@@ -105,10 +105,10 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 		case WM_COMMAND:
 			if (message == WM_COMMAND && (HWND)lParam == submitButton)
 			{
-				GetWindowText(nameFile, text, _countof(text));
+				GetWindowText(nameFile, nameYourFile, _countof(nameYourFile));
 				GetWindowText(textField, messageText, _countof(messageText));
 
-				file.open(text, std::fstream::app);
+				file.open(nameYourFile, std::fstream::app);
 
 				for (int i = 0; i < sizeof(messageText) / sizeof(messageText[0]); i++)
 				{
