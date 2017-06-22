@@ -1,6 +1,8 @@
 #pragma comment(linker,"\"/manifestdependency:type='win32' \
 name='Microsoft.Windows.Common-Controls' version='6.0.0.0' \
 processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
+/*to give the window a "fresher" window look*/
+
 
 #include <tchar.h>
 #include <windows.h>
@@ -26,22 +28,22 @@ int WINAPI WinMain(HINSTANCE hThisInstance,
 	MSG messages;            /* Here messages to the application are saved */
 	WNDCLASSEX wincl;        /* Data structure for the windowclass */
 
-							 /* The Window structure */
-	wincl.hInstance = hThisInstance;
+	/* The Window structure */
+	wincl.hInstance     = hThisInstance;
 	wincl.lpszClassName = szClassName;
-	wincl.lpfnWndProc = WindowProcedure;      /* This function is called by windows */
-	wincl.style = CS_DBLCLKS;                 /* Catch double-clicks */
-	wincl.cbSize = sizeof(WNDCLASSEX);
+	wincl.lpfnWndProc   = WindowProcedure;      /* This function is called by windows */
+	wincl.style         = CS_DBLCLKS;           /* Catch double-clicks */
+	wincl.cbSize        = sizeof(WNDCLASSEX);
 
 	/* Use default icon and mouse-pointer */
-	wincl.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-	wincl.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
-	wincl.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wincl.lpszMenuName = NULL;                 /* No menu */
-	wincl.cbClsExtra = 0;                      /* No extra bytes after the window class */
-	wincl.cbWndExtra = 0;                      /* structure or the window instance */
-											   /* Use Windows's default colour as the background of the window */
-	wincl.hbrBackground = CreateSolidBrush(RGB(255, 255, 255));
+	wincl.hIcon        = LoadIcon(NULL, IDI_APPLICATION);
+	wincl.hIconSm      = LoadIcon(NULL, IDI_APPLICATION);
+	wincl.hCursor      = LoadCursor(NULL, IDC_ARROW);
+	wincl.lpszMenuName = NULL; /* No menu */
+	wincl.cbClsExtra   = 0;    /* No extra bytes after the window class */
+	wincl.cbWndExtra   = 0;    /* structure or the window instance */
+											  
+	wincl.hbrBackground = CreateSolidBrush(RGB(255, 255, 255)); /* Sets the backround of the Window to white */
 
 	/* Register the window class, and if it fails quit the program */
 	if (!RegisterClassEx(&wincl))
@@ -51,7 +53,7 @@ int WINAPI WinMain(HINSTANCE hThisInstance,
 	hwnd = CreateWindowEx(
 		0,                   /* Extended possibilites for variation */
 		szClassName,         /* Classname */
-		_T("essay writer"),       /* Title Text */
+		_T("essay writer"),  /* Title Text */
 		WS_OVERLAPPEDWINDOW, /* default window */
 		CW_USEDEFAULT,       /* Windows decides the position */
 		CW_USEDEFAULT,       /* where the window ends up on the screen */
@@ -84,41 +86,45 @@ int WINAPI WinMain(HINSTANCE hThisInstance,
 
 LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	TCHAR info[] = _T("Write your essay in the field to the left\nthen press submit.");
+	TCHAR info[]  = _T("Write your essay in the field to the left\nthen press submit.");
 	TCHAR info2[] = _T("dont forget to add\n.txt at the end of the name.");
 	TCHAR text[100];
 	TCHAR messageText[10000];
 	std::basic_fstream<TCHAR> file;
 
-	switch (message)                  /* handle the messages */
+	switch (message) /* handle the messages */
 	{
-	case WM_CREATE:
-		textField = CreateWindowEx(WS_EX_WINDOWEDGE, _T("Edit"), _T("write here, supports 10.000 words, supports appending"), WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE | WS_BORDER, 10, 10, 250, 250, hwnd, NULL, hInstance, (LPVOID)lParam);
-		infoText = CreateWindowEx(WS_EX_WINDOWEDGE, _T("Static"), info, WS_CHILD | WS_VISIBLE, 300, 10, 130, 50, hwnd, NULL, hInstance, (LPVOID)lParam);
-		infoText2 = CreateWindowEx(WS_EX_WINDOWEDGE, _T("Static"), info2, WS_CHILD | WS_VISIBLE, 300, 100, 130, 50, hwnd, NULL, hInstance, (LPVOID)lParam);
-		nameFile = CreateWindowEx(NULL, _T("Edit"), _T("nameOfFile.txt"), WS_CHILD | WS_VISIBLE | WS_BORDER, 300, 70, 100, 20, hwnd, NULL, hInstance, (LPVOID)lParam);
-		submitButton = CreateWindowEx(WS_EX_WINDOWEDGE, _T("Button"), _T("SUBMIT"), WS_CHILD | WS_VISIBLE, 300, 170, 60, 20, hwnd, NULL, hInstance, (LPVOID)lParam);
-		
-		break;
-	case WM_COMMAND:
-		if (message == WM_COMMAND && (HWND)lParam == submitButton)
-		{
-			GetWindowText(nameFile, text, _countof(text));
-			GetWindowText(textField, messageText, _countof(messageText));
-			file.open(text, std::fstream::app);
-			for (int i = 0; i < sizeof(messageText) / sizeof(messageText[0]); i++)
-			{
-				file <<	messageText[i];
-			}
-			file.close();
-		}
-		break;
-	case WM_DESTROY:
-		PostQuitMessage(0);       /* send a WM_QUIT to the message queue */
-		break;
-	default:                      /* for messages that we don't deal with */
-		return DefWindowProc(hwnd, message, wParam, lParam);
-	}
+		case WM_CREATE:
+			textField    = CreateWindowEx(WS_EX_WINDOWEDGE, _T("Edit"), _T("write here, supports 10.000 words, supports appending"), WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE | WS_BORDER, 10, 10, 250, 250, hwnd, NULL, hInstance, (LPVOID)lParam);
+			infoText     = CreateWindowEx(WS_EX_WINDOWEDGE, _T("Static"), info, WS_CHILD | WS_VISIBLE, 300, 10, 130, 50, hwnd, NULL, hInstance, (LPVOID)lParam);
+			infoText2    = CreateWindowEx(WS_EX_WINDOWEDGE, _T("Static"), info2, WS_CHILD | WS_VISIBLE, 300, 100, 130, 50, hwnd, NULL, hInstance, (LPVOID)lParam);
+			nameFile     = CreateWindowEx(NULL, _T("Edit"), _T("nameOfFile.txt"), WS_CHILD | WS_VISIBLE | WS_BORDER, 300, 70, 100, 20, hwnd, NULL, hInstance, (LPVOID)lParam);
+			submitButton = CreateWindowEx(WS_EX_WINDOWEDGE, _T("Button"), _T("SUBMIT"), WS_CHILD | WS_VISIBLE, 300, 170, 60, 20, hwnd, NULL, hInstance, (LPVOID)lParam);
+			break;
 
+		case WM_COMMAND:
+			if (message == WM_COMMAND && (HWND)lParam == submitButton)
+			{
+				GetWindowText(nameFile, text, _countof(text));
+				GetWindowText(textField, messageText, _countof(messageText));
+
+				file.open(text, std::fstream::app);
+
+				for (int i = 0; i < sizeof(messageText) / sizeof(messageText[0]); i++)
+				{
+					file << messageText[i];
+				}
+
+				file.close();
+			}
+			break;
+
+		case WM_DESTROY:
+			PostQuitMessage(0); /* send a WM_QUIT to the message queue */
+			break;
+
+		default: /* for messages that we don't deal with */
+			return DefWindowProc(hwnd, message, wParam, lParam);
+	}
 	return 0;
 }
